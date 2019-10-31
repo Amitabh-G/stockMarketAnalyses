@@ -34,3 +34,31 @@ plot(res.int1)
 acf(res.int1)
 pacf(res.int1)
 
+# Time series cross-validation
+library(forecast)
+e <- tsCV(close.price, forecastfunction=naive, h=8)
+mse <- colMeans(e^2, na.rm = T)
+rmse <- sqrt(mse)
+rmse
+
+e <- tsCV(close.price, forecastfunction=naive, h=1)
+mse <- sqrt(mean(e^2, na.rm=TRUE))
+mse
+e
+
+# Using a forecast function for tsCV()
+
+ff <- function() {
+  fit <- Arima(close.price, order = c(0, 0, 1))
+  return(forecast(fit))
+}
+forecast.func <-function(y, h){forecast(Arima(y[1:482], order = c(0,0,1)),h=h)}
+forecast.error <- tsCV(close.price, forecast.func, h=1) #Arguments to the forecast function are the arguments in the tsCV() function.
+
+
+
+
+
+
+
+
